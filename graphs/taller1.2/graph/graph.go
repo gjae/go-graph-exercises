@@ -43,9 +43,9 @@ func (g *GraphMesh) AddEdge(origin, dest int, weight float32) {
 	g.AdjList[dest] = append(g.AdjList[dest], &Edge{v: dest, w: origin, weight: weight})
 }
 
-func (g *GraphMesh) AdjacentsOf(edge int) []*Edge {
-	if _, ok := g.AdjList[edge]; ok {
-		return g.AdjList[edge]
+func (g *GraphMesh) AdjacentsOf(vertex int) []*Edge {
+	if _, ok := g.AdjList[vertex]; ok {
+		return g.AdjList[vertex]
 	}
 	return []*Edge{}
 }
