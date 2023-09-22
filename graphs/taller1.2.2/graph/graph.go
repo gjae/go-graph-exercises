@@ -103,11 +103,27 @@ func (g *GraphMesh) Print() {
 				} else {
 					fmt.Print("┴")
 				}
+			} else if numAdj == 1 {
+				if i == 0 || i == g.size-1 {
+					fmt.Print("─")
+				} else if j == g.size-1 {
+					fmt.Println("┴")
+				} else if j == 0 {
+					fmt.Println("│")
+				} else {
+					fmt.Print("┬")
+				}
+			} else if numAdj == 0 {
+				fmt.Println("")
 			} else {
 				fmt.Print("┼")
 			}
 		}
 	}
+}
+
+func (g *GraphMesh) AddNewEdge(e *Edge) {
+	g.AddEdge(e.v, e.w, e.weight)
 }
 
 /**
@@ -129,8 +145,12 @@ func (e *Edge) Vertexes() (int, int) {
 	return e.v, e.w
 }
 
-func (e *Edge) Oposed() int {
-	return e.w
+func (e *Edge) Oposed(vertex int) int {
+	if vertex == e.v {
+		return e.w
+	}
+
+	return e.v
 }
 
 func (e *Edge) Origin() int {

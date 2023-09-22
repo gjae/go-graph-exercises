@@ -13,7 +13,6 @@ func main() {
 
 	g := graph.NewGraph(*size)
 	g.BuildMesh()
-	g.Print()
 
 	algos.PrimMST(g)
 }

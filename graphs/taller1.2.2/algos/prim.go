@@ -15,7 +15,7 @@ type Edge struct {
 type Prim struct {
 	Queue   PriorityQueue
 	Visited []bool
-	TreeRm  []*Edge
+	NewMesh *mesh.GraphMesh
 }
 
 const INF = 9999999
@@ -48,7 +48,7 @@ func (pq *PriorityQueue) Pop() interface{} {
 func (p *Prim) Visit(g *mesh.GraphMesh, v int) {
 	p.Visited[v] = true
 	for _, edge := range g.AdjacentsOf(v) {
-		if !p.Visited[edge.Oposed()] {
+		if !p.Visited[edge.Oposed(v)] {
 			heap.Push(&p.Queue, &Edge{edge: edge})
 		}
 	}
@@ -59,22 +59,24 @@ func PrimMST(graph *mesh.GraphMesh) {
 	prim := Prim{
 		Visited: make([]bool, graph.Size()*graph.Size()),
 		Queue:   make(PriorityQueue, 0),
-		TreeRm:  make([]*Edge, graph.Size()*graph.Size()),
+		NewMesh: mesh.NewGraph(graph.Size()),
 	}
 
 	heap.Init(&prim.Queue)
-	// Agregar las aristas a la cola con prioridad
-
 	prim.Visit(graph, 0)
 
+	/*
+	* Mientras la cola no esta vacia
+	* se sigue sacando nodos de la cola con prioridad
+	* y se agrega la arista al nuevo grafo
+	* */
 	for prim.Queue.Len() > 0 {
 		edge := heap.Pop(&prim.Queue)
 		v, w := edge.(*Edge).edge.Vertexes()
 		if prim.Visited[v] && prim.Visited[w] {
 			continue
 		}
-		prim.TreeRm = append(prim.TreeRm, edge.(*Edge))
-		edge.(*Edge).edge.PrintEdge()
+		prim.NewMesh.AddNewEdge(edge.(*Edge).edge)
 
 		if !prim.Visited[v] {
 			prim.Visit(graph, v)
@@ -84,4 +86,5 @@ func PrimMST(graph *mesh.GraphMesh) {
 		}
 	}
 
+	prim.NewMesh.Print()
 }
