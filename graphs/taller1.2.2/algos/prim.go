@@ -18,8 +18,6 @@ type Prim struct {
 	NewMesh *mesh.GraphMesh
 }
 
-const INF = 9999999
-
 func (pq PriorityQueue) Len() int {
 	return len(pq)
 }
