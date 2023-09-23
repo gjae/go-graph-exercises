@@ -8,11 +8,11 @@ import (
 
 func main() {
 
-	size := flag.Int("size", 0, "Indicar un tamaño para la malla. Sera una malla N*N")
+	cols := flag.Int("col", 0, "Indicar la cantidad de columnas para la malla.")
+	rows := flag.Int("row", 0, "Indica la cantidad de filas que tendra la malla")
 	flag.Parse()
 
-	g := graph.NewGraph(*size)
+	g := graph.NewGraph(*cols, *rows)
 	g.BuildMesh()
-
 	algos.PrimMST(g)
 }

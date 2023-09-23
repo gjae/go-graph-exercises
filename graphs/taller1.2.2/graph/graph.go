@@ -15,6 +15,8 @@ type Edge struct {
 type GraphMesh struct {
 	AdjList map[int][]*Edge
 	size    int
+	Cols    int
+	Rows    int
 }
 
 /**
@@ -22,15 +24,16 @@ type GraphMesh struct {
 * de adyacencia usando un map con una clave entera y de valor una lista
 * de aristas
  */
-func NewGraph(size int) *GraphMesh {
+func NewGraph(cols, rows int) *GraphMesh {
 
-	vTotal := size * size
+	vTotal := cols * rows
+	size := vTotal
 	list := make(map[int][]*Edge)
 	for i := 0; i < vTotal; i++ {
 		list[i] = []*Edge{}
 	}
 
-	return &GraphMesh{size: size, AdjList: list}
+	return &GraphMesh{size: size, AdjList: list, Cols: cols, Rows: rows}
 }
 
 /*
@@ -52,9 +55,9 @@ func (g *GraphMesh) AdjacentsOf(vertex int) []*Edge {
 
 /*
 * Se crea la malla con las formulas:
-* - la formula (i * g.size) + j da el vertice actual
-* - la formula (i * g.size) + j + 1 da el vertice siguiente al vertice actual
-* - la formula (i * g.size) + j + g.size aplica las aristas verticales de la malla
+* - la formula (i * g.Cols) + j da el vertice actual
+* - la formula (i * g.Cols) + j + 1 da el vertice siguiente al vertice actual
+* - la formula (i * g.Cols) + j + g.Cols aplica las aristas verticales de la malla
 * Ejemplo con un grafo 3 * 3:
 * 0 - 1 - 2
 * |	  |   |
@@ -64,39 +67,39 @@ func (g *GraphMesh) AdjacentsOf(vertex int) []*Edge {
 * */
 func (g *GraphMesh) BuildMesh() {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
-	for i := 0; i < g.size; i++ {
-		for j := 0; j < g.size; j++ {
-			currentVertex := (i * g.size) + j
-			if j < g.size-1 {
+	for i := 0; i < g.Rows; i++ {
+		for j := 0; j < g.Cols; j++ {
+			currentVertex := (i * g.Cols) + j
+			if j < g.Cols-1 {
 				g.AddEdge(currentVertex, currentVertex+1, rand.Float32())
 			}
-			if i < g.size-1 {
-				g.AddEdge(currentVertex, currentVertex+g.size, rand.Float32())
+			if i < g.Rows-1 {
+				g.AddEdge(currentVertex, currentVertex+g.Cols, rand.Float32())
 			}
 		}
 	}
 }
 
 func (g *GraphMesh) Print() {
-	for i := 0; i < g.size; i++ {
-		for j := 0; j < g.size; j++ {
-			currentVertex := (i * g.size) + j
+	for i := 0; i < g.Rows; i++ {
+		for j := 0; j < g.Cols; j++ {
+			currentVertex := (i * g.Cols) + j
 			adVertex := g.AdjList[currentVertex]
 			numAdj := len(adVertex)
 			if numAdj == 2 {
 				if i == 0 && j == 0 {
 					fmt.Print("┌")
-				} else if i == 0 && j == g.size-1 {
+				} else if i == 0 && j == g.Cols-1 {
 					fmt.Print("┐\n")
-				} else if i == g.size-1 && j == 0 {
+				} else if i == g.Rows-1 && j == 0 {
 					fmt.Print("└")
-				} else if i == g.size-1 && j == g.size-1 {
+				} else if i == g.Rows-1 && j == g.Cols-1 {
 					fmt.Print("┘\n")
 				}
 			} else if numAdj == 3 {
 				if j == 0 {
 					fmt.Print("├")
-				} else if j == g.size-1 {
+				} else if j == g.Cols-1 {
 					fmt.Print("┤\n")
 				} else if i == 0 {
 					fmt.Print("┬")
@@ -104,17 +107,15 @@ func (g *GraphMesh) Print() {
 					fmt.Print("┴")
 				}
 			} else if numAdj == 1 {
-				if i == 0 || i == g.size-1 {
+				if i == 0 || i == g.Rows-1 {
 					fmt.Print("─")
-				} else if j == g.size-1 {
+				} else if j == g.Cols-1 {
 					fmt.Println("┴")
 				} else if j == 0 {
 					fmt.Println("│")
 				} else {
 					fmt.Print("┬")
 				}
-			} else if numAdj == 0 {
-				fmt.Println("")
 			} else {
 				fmt.Print("┼")
 			}

@@ -55,9 +55,9 @@ func (p *Prim) Visit(g *mesh.GraphMesh, v int) {
 
 func PrimMST(graph *mesh.GraphMesh) {
 	prim := Prim{
-		Visited: make([]bool, graph.Size()*graph.Size()),
+		Visited: make([]bool, graph.Size()),
 		Queue:   make(PriorityQueue, 0),
-		NewMesh: mesh.NewGraph(graph.Size()),
+		NewMesh: mesh.NewGraph(graph.Cols, graph.Rows),
 	}
 
 	heap.Init(&prim.Queue)
