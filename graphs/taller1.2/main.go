@@ -3,14 +3,22 @@ package main
 import (
 	"flag"
 	"gjae/graph-mesh/graph"
+	"log"
 )
 
 func main() {
 
-	size := flag.Int("size", 0, "Indicar un tamaño para la malla. Sera una malla N*N")
+	cols := flag.Int("col", 0, "Indicar la cantidad de columnas para la malla.")
+	rows := flag.Int("row", 0, "Indica la cantidad de filas que tendra la malla")
+
 	flag.Parse()
 
-	g := graph.NewGraph(*size)
+	if *cols == 0 || *rows == 0 {
+		log.Fatal("Indique una cantidad de filas y columnas usando los parametros -row [filas] -col [columnas]")
+	}
+
+	g := graph.NewGraph(*cols, *rows)
 	g.BuildMesh()
 	g.Print()
+
 }
