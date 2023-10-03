@@ -36,9 +36,24 @@ func (g *Graph) RelaxCounter(relaxSource int) {
 	}
 }
 
-func (g *Graph) Print(source int) {
+func (g *Graph) Print() {
 	g.Mesh.Print()
-	RunDijkstra(g, source)
+	var entry, exit int
+
+	for k, _ := range g.Mesh.AdjList {
+		if len(g.Mesh.AdjacentsOf(k)) == 1 {
+			if entry == 0 {
+				entry = k
+			} else if exit == 0 {
+				exit = k
+			}
+		}
+
+		if entry != 0 && exit != 0 {
+			break
+		}
+	}
+	RunDijkstra(g, entry, exit)
 
 	fmt.Printf("\nDijkstra: %d\n", g.dijkstra)
 }

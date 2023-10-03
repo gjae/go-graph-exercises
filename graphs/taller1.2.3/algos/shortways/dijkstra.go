@@ -13,13 +13,31 @@ type Queue struct {
 }
 
 type DijkstraAlg struct {
-	Mesh  graph.GraphMesh
-	EdgeA []*graph.Edge
-	DistA []float32
-	Queue PriorityQueue
+	Mesh     graph.GraphMesh
+	EdgeA    []*graph.Edge
+	DistA    []float32
+	Queue    PriorityQueue
+	newGraph *Graph
 }
 
 const INF = 999999999999999999999.0
+
+func NewDijkstra(mesh *graph.GraphMesh, newGraph *Graph) *DijkstraAlg {
+	dist := make([]float32, mesh.Size()*mesh.Size())
+
+	// Inicializa todas las distancias por defecto a INF (infinito)
+	for i := 0; i < mesh.Size()*mesh.Size(); i++ {
+		dist[i] = INF
+	}
+
+	return &DijkstraAlg{
+		Mesh:     *mesh,
+		EdgeA:    make([]*graph.Edge, mesh.Size()*mesh.Size()),
+		DistA:    dist,
+		Queue:    make(PriorityQueue, 0),
+		newGraph: newGraph,
+	}
+}
 
 func (pq PriorityQueue) Len() int {
 	return len(pq)
@@ -56,6 +74,14 @@ func (pq *PriorityQueue) Has(w int) (bool, int) {
 	return false, -1
 }
 
+func (g *DijkstraAlg) DistanceOf(v int) float32 {
+	return g.DistA[v]
+}
+
+func (g *DijkstraAlg) ExistRoute(source int) bool {
+	return g.DistA[source] < INF
+}
+
 func (g *DijkstraAlg) Relax(v Queue) {
 	source := v.Source
 
@@ -65,6 +91,7 @@ func (g *DijkstraAlg) Relax(v Queue) {
 		if g.DistA[w] > g.DistA[source]+edge.Weight() {
 			g.DistA[w] = g.DistA[source] + edge.Weight()
 			g.EdgeA[w] = edge
+			g.newGraph.RelaxCounter(DIJKSTRA)
 			if ok, k := g.Queue.Has(w); ok {
 				g.Queue[k].Dist = g.DistA[w]
 			} else {
@@ -74,31 +101,8 @@ func (g *DijkstraAlg) Relax(v Queue) {
 	}
 }
 
-func (g *DijkstraAlg) DistanceOf(v int) float32 {
-	return g.DistA[v]
-}
-
-func (g *DijkstraAlg) ExistRoute(source int) bool {
-	return g.DistA[source] < INF
-}
-
-func NewDijkstra(mesh *graph.GraphMesh) *DijkstraAlg {
-	dist := make([]float32, mesh.Size()*mesh.Size())
-
-	for i := 0; i < mesh.Size()*mesh.Size(); i++ {
-		dist[i] = INF
-	}
-
-	return &DijkstraAlg{
-		Mesh:  *mesh,
-		EdgeA: make([]*graph.Edge, mesh.Size()*mesh.Size()),
-		DistA: dist,
-		Queue: make(PriorityQueue, 0),
-	}
-}
-
-func RunDijkstra(graph *Graph, origin int) {
-	d := NewDijkstra(graph.Mesh)
+func RunDijkstra(graph *Graph, origin int, target int) {
+	d := NewDijkstra(graph.Mesh, graph)
 
 	heap.Init(&d.Queue)
 	d.EdgeA[origin] = nil
@@ -108,7 +112,5 @@ func RunDijkstra(graph *Graph, origin int) {
 	for d.Queue.Len() > 0 {
 		v := heap.Pop(&d.Queue)
 		d.Relax(v.(Queue))
-		graph.RelaxCounter(DIJKSTRA)
 	}
-
 }

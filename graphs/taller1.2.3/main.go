@@ -22,5 +22,5 @@ func main() {
 	g.BuildMesh()
 
 	wayFinder := shortways.NewShortWayFinder(algos.PrimMST(g))
-	wayFinder.Print(2)
+	wayFinder.Print()
 }
