@@ -28,7 +28,6 @@ func (g *Graph) RelaxCounter(relaxSource int) {
 	if relaxSource == DIJKSTRA {
 		g.dijkstra++
 	} else if relaxSource == BFS {
-		fmt.Println("Relajando BFS")
 		g.bfs++
 	} else {
 		fmt.Println("Relajando A*")
@@ -54,6 +53,8 @@ func (g *Graph) Print() {
 		}
 	}
 	RunDijkstra(g, entry, exit)
+	RunBfs(g, entry, exit)
 
 	fmt.Printf("\nDijkstra: %d\n", g.dijkstra)
+	fmt.Printf("Bfs: %d\n", g.bfs)
 }
