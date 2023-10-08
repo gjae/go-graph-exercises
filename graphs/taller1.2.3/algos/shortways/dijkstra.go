@@ -13,11 +13,12 @@ type Queue struct {
 }
 
 type DijkstraAlg struct {
-	Mesh     graph.GraphMesh
-	EdgeA    []*graph.Edge
-	DistA    []float32
-	Queue    PriorityQueue
-	newGraph *Graph
+	Mesh        graph.GraphMesh
+	EdgeA       []*graph.Edge
+	DistA       []float32
+	Queue       PriorityQueue
+	newGraph    *Graph
+	TargetFound bool
 }
 
 const INF = 999999999999999999999.0

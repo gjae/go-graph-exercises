@@ -30,7 +30,7 @@ func ManhattanDistance(mesh *graph.GraphMesh, edge *graph.Edge) float32 {
 	return float32(dx + dy)
 }
 
-func (d *DijkstraAlg) RelaxBfs(q Queue) {
+func (d *DijkstraAlg) RelaxBfs(q Queue, target int) {
 	v := q.Source
 	for _, a := range d.newGraph.Mesh.AdjacentsOf(v) {
 		w := a.Oposed(v)
@@ -44,6 +44,12 @@ func (d *DijkstraAlg) RelaxBfs(q Queue) {
 			})
 			d.newGraph.RelaxCounter(BFS)
 		}
+
+		if w == target {
+			d.TargetFound = true
+			break
+		}
+
 	}
 }
 
@@ -55,8 +61,8 @@ func RunBfs(graph *Graph, origin int, target int) {
 	d.DistA[origin] = 0
 	heap.Push(&d.Queue, Queue{Source: origin, Dist: 0})
 
-	for d.Queue.Len() > 0 {
+	for d.Queue.Len() > 0 && !d.TargetFound {
 		v := heap.Pop(&d.Queue)
-		d.RelaxBfs(v.(Queue))
+		d.RelaxBfs(v.(Queue), target)
 	}
 }
