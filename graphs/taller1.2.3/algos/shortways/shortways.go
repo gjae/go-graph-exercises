@@ -35,7 +35,6 @@ func (g *Graph) RelaxCounter(relaxSource int) {
 }
 
 func (g *Graph) Print() {
-	g.Mesh.Print()
 	entry := -1
 	exit := -1
 

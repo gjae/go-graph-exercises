@@ -86,40 +86,76 @@ func (g *GraphMesh) Print() {
 			currentVertex := (i * g.Cols) + j
 			adVertex := g.AdjList[currentVertex]
 			numAdj := len(adVertex)
-			if numAdj == 2 {
-				if i == 0 && j == 0 {
-					fmt.Print("┌")
-				} else if i == 0 && j == g.Cols-1 {
-					fmt.Print("┐\n")
-				} else if i == g.Rows-1 && j == 0 {
-					fmt.Print("└")
-				} else if i == g.Rows-1 && j == g.Cols-1 {
-					fmt.Print("┘\n")
-				}
-			} else if numAdj == 3 {
-				if j == 0 {
-					fmt.Print("├")
-				} else if j == g.Cols-1 {
-					fmt.Print("┤\n")
-				} else if i == 0 {
+			if i == 0 {
+				if numAdj == 2 {
+					if j == 0 {
+						fmt.Print("┌")
+					} else if j == g.Cols-1 {
+						fmt.Print("┐")
+					} else {
+						fmt.Print("─")
+					}
+				} else if numAdj == 3 {
 					fmt.Print("┬")
+				} else if numAdj == 1 {
+					if j == 0 {
+						fmt.Print("┌")
+					} else if j < g.Cols-1 {
+						fmt.Print("─")
+					} else {
+						fmt.Print("┐")
+					}
+				}
+			} else if i < g.Rows-1 {
+				if numAdj == 3 {
+					if j == 0 {
+						fmt.Print("├")
+					} else if j == g.Cols-1 {
+						fmt.Print("┐")
+					} else {
+						fmt.Print("┬")
+					}
+				} else if numAdj == 4 {
+					fmt.Print("┼")
+				} else if numAdj == 2 {
+					if j == 0 {
+						fmt.Print("├")
+					} else if j == g.Cols-1 {
+						fmt.Print("┤")
+					} else {
+						fmt.Print("─")
+					}
 				} else {
+					if j == 0 {
+						fmt.Print("├")
+					} else if j < g.Cols-1 {
+						fmt.Print("─")
+					} else {
+						fmt.Print("┤")
+
+					}
+				}
+			} else if i == g.Rows-1 {
+				if numAdj == 2 {
+					if j == 0 {
+						fmt.Print("└")
+					} else if j == g.Cols-1 {
+						fmt.Print("┘")
+					} else {
+						fmt.Print("┴")
+					}
+				} else if numAdj == 3 {
 					fmt.Print("┴")
+				} else if numAdj == 1 {
+					if j == 0 || j == g.Cols-1 {
+						fmt.Print("┴")
+					} else if j < g.Cols-1 {
+						fmt.Print("┴")
+					}
 				}
-			} else if numAdj == 1 {
-				if i == 0 || i == g.Rows-1 {
-					fmt.Print("─")
-				} else if j == g.Cols-1 {
-					fmt.Println("┴")
-				} else if j == 0 {
-					fmt.Println("│")
-				} else {
-					fmt.Print("┬")
-				}
-			} else {
-				fmt.Print("┼")
 			}
 		}
+		fmt.Println()
 	}
 }
 
